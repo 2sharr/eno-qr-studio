@@ -1,6 +1,7 @@
 'use client';
 
 import { QRDataType } from '@/types/qr';
+import { normalizeUrl } from '@/lib/normalizeUrl';
 
 interface DataTypeFormProps {
   dataType: QRDataType;
@@ -45,6 +46,7 @@ export default function DataTypeForm({ dataType, fields, onChange }: DataTypeFor
               placeholder="https://example.com"
               value={(fields.url as string) || ''}
               onChange={(e) => update('url', e.target.value)}
+              onBlur={(e) => update('url', normalizeUrl(e.target.value))}
             />
           </div>
           <div className="flex flex-wrap gap-2">
