@@ -19,6 +19,7 @@ export default function QRPreview({ data, config, label }: QRPreviewProps) {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [downloadMessage, setDownloadMessage] = useState('');
+  const [downloadId, setDownloadId] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const cancelledRef = useRef(false);
 
@@ -78,6 +79,7 @@ export default function QRPreview({ data, config, label }: QRPreviewProps) {
 
   const showDownloadToast = (format: 'PNG' | 'SVG') => {
     setDownloadMessage(`Downloaded ${displayName}.${format.toLowerCase()}`);
+    setDownloadId((id) => id + 1);
   };
 
   return (
@@ -149,7 +151,8 @@ export default function QRPreview({ data, config, label }: QRPreviewProps) {
       {downloadMessage && (
         <DownloadToast
           message={downloadMessage}
-          key={downloadMessage}
+          id={downloadId}
+          key={downloadId}
         />
       )}
     </div>
