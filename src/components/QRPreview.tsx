@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import DownloadToast from '@/components/DownloadToast';
 import { QRConfig } from '@/types/qr';
 import { renderQR } from '@/lib/qr-renderer';
 import { downloadSVG, downloadPNG, printQRCode } from '@/lib/export-utils';
@@ -17,6 +18,7 @@ export default function QRPreview({ data, config, label }: QRPreviewProps) {
   const [dataURL, setDataURL] = useState('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [downloadMessage, setDownloadMessage] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const cancelledRef = useRef(false);
 
@@ -74,6 +76,10 @@ export default function QRPreview({ data, config, label }: QRPreviewProps) {
 
   const displayName = label || 'qr-code';
 
+  const showDownloadToast = (format: 'PNG' | 'SVG') => {
+    setDownloadMessage(`Downloaded ${displayName}.${format.toLowerCase()}`);
+  };
+
   return (
     <div className="flex flex-col items-center">
       {/* QR Code Display */}
@@ -105,14 +111,20 @@ export default function QRPreview({ data, config, label }: QRPreviewProps) {
       {svgString && (
         <div className="flex flex-wrap gap-2 mt-4 justify-center">
           <button
-            onClick={() => downloadPNG(dataURL, displayName)}
+            onClick={() => {
+              downloadPNG(dataURL, displayName);
+              showDownloadToast('PNG');
+            }}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-medium hover:opacity-90 transition-smooth"
           >
             <Download className="w-4 h-4" />
             PNG
           </button>
           <button
-            onClick={() => downloadSVG(svgString, displayName)}
+            onClick={() => {
+              downloadSVG(svgString, displayName);
+              showDownloadToast('SVG');
+            }}
             className="flex items-center gap-2 px-4 py-2 rounded-xl border border-border text-sm font-medium hover:bg-surface-hover transition-smooth"
           >
             <Download className="w-4 h-4" />
@@ -133,6 +145,12 @@ export default function QRPreview({ data, config, label }: QRPreviewProps) {
             {copied ? 'Copied!' : 'Copy SVG'}
           </button>
         </div>
+      )}
+      {downloadMessage && (
+        <DownloadToast
+          message={downloadMessage}
+          key={downloadMessage}
+        />
       )}
     </div>
   );
