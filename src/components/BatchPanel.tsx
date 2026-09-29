@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import DownloadToast from '@/components/DownloadToast';
 import { QRConfig, BatchItem } from '@/types/qr';
 import { parseCSVToBatch } from '@/lib/csv-parser';
 import { renderQR } from '@/lib/qr-renderer';
@@ -29,6 +30,7 @@ export default function BatchPanel({ config }: BatchPanelProps) {
   const [items, setItems] = useState<BatchItem[]>([]);
   const [error, setError] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [downloadMessage, setDownloadMessage] = useState('');
   const [results, setResults] = useState<
     Array<{ label: string; svgString: string; dataURL: string }>
   >([]);
@@ -68,6 +70,7 @@ export default function BatchPanel({ config }: BatchPanelProps) {
   const handleDownloadAll = (format: 'png' | 'svg') => {
     if (results.length === 0) return;
     downloadAllAsZip(results, format);
+    setDownloadMessage(`Downloaded all ${format.toUpperCase()} files as ZIP`);
   };
 
   const handlePrintAll = () => {
@@ -220,6 +223,12 @@ export default function BatchPanel({ config }: BatchPanelProps) {
             ))}
           </div>
         </div>
+      )}
+      {downloadMessage && (
+        <DownloadToast
+          message={downloadMessage}
+          key={downloadMessage}
+        />
       )}
     </div>
   );
