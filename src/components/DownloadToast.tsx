@@ -5,15 +5,20 @@ import { Check } from 'lucide-react';
 
 interface DownloadToastProps {
   message: string;
+  id: number;
 }
 
-export default function DownloadToast({ message }: DownloadToastProps) {
+export default function DownloadToast({ message, id }: DownloadToastProps) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setVisible(false), 2500);
-    return () => window.clearTimeout(timer);
-  }, [message]);
+    const fadeTimer = window.setTimeout(() => setVisible(false), 2200);
+    const removeTimer = window.setTimeout(() => setVisible(false), 2500);
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(removeTimer);
+    };
+  }, [id, message]);
 
   if (!visible) return null;
 
