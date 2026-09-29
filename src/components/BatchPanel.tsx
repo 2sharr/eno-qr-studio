@@ -31,6 +31,7 @@ export default function BatchPanel({ config }: BatchPanelProps) {
   const [error, setError] = useState('');
   const [generating, setGenerating] = useState(false);
   const [downloadMessage, setDownloadMessage] = useState('');
+  const [downloadId, setDownloadId] = useState(0);
   const [results, setResults] = useState<
     Array<{ label: string; svgString: string; dataURL: string }>
   >([]);
@@ -71,6 +72,7 @@ export default function BatchPanel({ config }: BatchPanelProps) {
     if (results.length === 0) return;
     downloadAllAsZip(results, format);
     setDownloadMessage(`Downloaded all ${format.toUpperCase()} files as ZIP`);
+    setDownloadId((id) => id + 1);
   };
 
   const handlePrintAll = () => {
@@ -227,7 +229,8 @@ export default function BatchPanel({ config }: BatchPanelProps) {
       {downloadMessage && (
         <DownloadToast
           message={downloadMessage}
-          key={downloadMessage}
+          id={downloadId}
+          key={downloadId}
         />
       )}
     </div>
