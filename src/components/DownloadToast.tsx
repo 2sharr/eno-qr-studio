@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 
 interface DownloadToastProps {
@@ -7,6 +8,15 @@ interface DownloadToastProps {
 }
 
 export default function DownloadToast({ message }: DownloadToastProps) {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setVisible(false), 2500);
+    return () => window.clearTimeout(timer);
+  }, [message]);
+
+  if (!visible) return null;
+
   return (
     <div
       role="status"
